@@ -1,0 +1,9 @@
+management:
+  endpoints:
+    web:
+      base-path: ${application.ingestor.api.path}/actuator
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: ${application.ingestor.api.path}/swagger/swagger2.json

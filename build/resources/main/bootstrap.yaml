@@ -1,0 +1,16 @@
+application:
+  ingestor:
+    api:
+      path: /geojson/v1.0/ingestor
+spring:
+  application:
+    name: ms-geojson-ingestor
+  main:
+    allow-bean-definition-overriding: true
+info:
+  project:
+    version: 1.0.0
+    title: MS Geojson
+    description: microservices extract geojson ingestor
+server:
+  port: 8080

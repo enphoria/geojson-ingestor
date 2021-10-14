@@ -1,0 +1,38 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.5.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+	id 'maven-publish'
+}
+
+group = 'com.enphoria'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+description = 'ms geojson'
+archivesBaseName = 'ms-geojson-ingestor'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.mapstruct:mapstruct-jdk8:1.2.0.Final'
+	implementation 'org.mapstruct:mapstruct-processor:1.2.0.Final'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-context', version: '2.2.6.RELEASE'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+}
+
+test {
+	useJUnitPlatform()
+}
