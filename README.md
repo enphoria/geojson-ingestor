@@ -26,7 +26,7 @@ git clone enphoria/geojson-ingestor
 Perform the project build
 
 ```
-gradle build
+mvn clean install
 ```
 
 Start the project
@@ -40,7 +40,7 @@ java -jar ms-geojson-ingestor-0.0.1-SNAPSHOT.jar
 _To run the tests you must use the following command_
 
 ```
-gradle test
+mvn test
 ```
 _This will generate a report, it is attached to the test / html folder, inside it is the index.html where you can see the generated coverage report_
 
@@ -65,7 +65,7 @@ ms-geojson-ingestor.yaml
 _The technologies used are mentioned below:_
 
 * [Spring Boot](https://spring.io/projects/spring-boot) - framework backend
-* [Gradle](https://gradle.org/) - Build automation tool
+* [Maven](https://maven.apache.org/) - Build automation tool
 * [Jacoco](https://www.eclemma.org/jacoco/) - Testing report
 * [Mockito](https://site.mockito.org/) - Framework testing
 
