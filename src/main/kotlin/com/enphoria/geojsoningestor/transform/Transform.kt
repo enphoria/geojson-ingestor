@@ -34,40 +34,68 @@ class Transform {
     fun readGeojson() {
         //String geojson = "";
         val mapping = ObjectMapper()
+        val service = NetworkService()
+        var cEc:Int = 0
         //Paths.get("geojson.json").toFile()
         val geojson = mapping.readValue(
-            Paths.get("/Users/camcardenas/Downloads/geojsoningestor/src/main/resources/geojson.json").toFile(),
+            Paths.get("/home/alex/Documentos/Projects/AUTRALIA/geojson-ingestor/src/main/resources/geojson.json").toFile(),
             GeoJson::class.java
         )
         geojson.features.forEach(Consumer { item: Feature ->
             if (item.properties.classd == "EnergyConsumer") {
+                cEc++
                 println(item.properties.fid)
                 println(item.properties.id)
+
+                val amps = Analog().apply { powerSystemResourceMRID = "ASWITCH" }
+                val count = Accumulator().apply { powerSystemResourceMRID = "ASWITCH" }
+
+                var loc = Location().apply { name = "prueba"+cEc
+                    description = item.properties.classd.toString()+cEc
+                    addPoint(PositionPoint(item.properties.lon,item.properties.lat))
+                }
+                val energyC = EnergyConsumer().apply {
+                    customerCount = cEc
+                    grounded = item.properties.grounded.toString().toBoolean()
+                    p = 0.0
+                    q = 0.0
+                    pFixed = 0.0
+                    name = "prueba"+cEc
+                    description = item.properties.classd.toString()+cEc
+                    location = loc
+                }
+
+                service.getMeasurements<Measurement>("ASWITCH")
+                service.getMeasurements<Analog>("ASWITCH")
+                service.add(amps)
+                service.add(count)
+                service.add(loc)
+                service.add(energyC)
             }
         })
 
         val metaData = MetadataCollection().apply { add(DataSource("geojson extractor", version = "0.1")) }
-        val dbFile = "/Users/camcardenas/Documents/Personal/Zepben/ewb/ee-ehv-prod/2021-11-02/2021-11-02-network-model.sqlite"
+        val dbFile = "/home/alex/Documentos/zepben/dataMode/2021-11-11/2021-11-11-network-model.sqlite"
         /*val services = ServicesStore()*/
 
         /*Create network services*/
-        val service = NetworkService()
-        val amps = Analog().apply { powerSystemResourceMRID = "ASWITCH" }
-        val count = Accumulator().apply { powerSystemResourceMRID = "ASWITCH" }
-        var loc = Location().apply { name = "prueba"
+
+        /*val amps = Analog().apply { powerSystemResourceMRID = "ASWITCH" }
+        val count = Accumulator().apply { powerSystemResourceMRID = "ASWITCH" }*/
+        /*var loc = Location().apply { name = "prueba"
                                             description = "dfg"
                                             addPoint(PositionPoint(149.109057447049,-35.2696664208097))
-        }
+        }*/
 
         //val energyConsumer = EnergyConsumer().phaseConnectio
-        service.add(amps)
-        service.add(count)
-        service.add(loc)
+        //service.add(amps)
+        //service.add(count)
+        //service.add(loc)
         //service.add(positionPoint)
         // Gets both the analog and the accumulator
-        service.getMeasurements<Measurement>("ASWITCH")
+        //service.getMeasurements<Measurement>("ASWITCH")
         // Will get just the analog
-        service.getMeasurements<Analog>("ASWITCH")
+        //service.getMeasurements<Analog>("ASWITCH")
 
         /*Creatte diagram service*/
         val serviceDiagram = DiagramService()
@@ -105,7 +133,7 @@ class Transform {
         /*val point = listOf(UsagePoint().apply {
             usagePointLocation = Location().addPoint(PositionPoint(149.109057447049,-35.2696664208097))
         })*/
-        val energyC = EnergyConsumer().apply { customerCount = 1
+        /*val energyC = EnergyConsumer().apply { customerCount = 1
             grounded = true
             p = 0.0
             q = 0.0
@@ -113,12 +141,12 @@ class Transform {
             name = "ec1"
             description = "ec1 description"
             location = loc
-        }
+        }*/
 
         //.location?.apply { name = "prueba2"
         //            description = "dfg2"
         //            addPoint(PositionPoint(149.109057447049,-35.2696664208097)) }
-        service.add(energyC)
+        //service.add(energyC)
 
         // Contains [do1]
         serviceDiagram.getDiagramObjects(do1.mRID)
