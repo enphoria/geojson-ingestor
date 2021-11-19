@@ -72,30 +72,12 @@ class Transform {
                 service.add(loc)
                 service.add(energyC)
             }
+
         })
 
         val metaData = MetadataCollection().apply { add(DataSource("geojson extractor", version = "0.1")) }
         val dbFile = "/home/alex/Documentos/zepben/dataMode/2021-11-11/2021-11-11-network-model.sqlite"
-        /*val services = ServicesStore()*/
 
-        /*Create network services*/
-
-        /*val amps = Analog().apply { powerSystemResourceMRID = "ASWITCH" }
-        val count = Accumulator().apply { powerSystemResourceMRID = "ASWITCH" }*/
-        /*var loc = Location().apply { name = "prueba"
-                                            description = "dfg"
-                                            addPoint(PositionPoint(149.109057447049,-35.2696664208097))
-        }*/
-
-        //val energyConsumer = EnergyConsumer().phaseConnectio
-        //service.add(amps)
-        //service.add(count)
-        //service.add(loc)
-        //service.add(positionPoint)
-        // Gets both the analog and the accumulator
-        //service.getMeasurements<Measurement>("ASWITCH")
-        // Will get just the analog
-        //service.getMeasurements<Analog>("ASWITCH")
 
         /*Creatte diagram service*/
         val serviceDiagram = DiagramService()
@@ -130,25 +112,7 @@ class Transform {
         serviceDiagram.add(do1)
         serviceDiagram.add(do2)
         serviceDiagram.add(do3)
-        /*val point = listOf(UsagePoint().apply {
-            usagePointLocation = Location().addPoint(PositionPoint(149.109057447049,-35.2696664208097))
-        })*/
-        /*val energyC = EnergyConsumer().apply { customerCount = 1
-            grounded = true
-            p = 0.0
-            q = 0.0
-            pFixed = 0.0
-            name = "ec1"
-            description = "ec1 description"
-            location = loc
-        }*/
 
-        //.location?.apply { name = "prueba2"
-        //            description = "dfg2"
-        //            addPoint(PositionPoint(149.109057447049,-35.2696664208097)) }
-        //service.add(energyC)
-
-        // Contains [do1]
         serviceDiagram.getDiagramObjects(do1.mRID)
 
         // Contains [do1, do2, do3]
