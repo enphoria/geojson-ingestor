@@ -1,4 +1,4 @@
-package com.enphoria.geojsoningestor.json
+package com.enphoria.geojsoningestor.mapper.geojsondata
 
 data class Feature(
     val geometry: Geometry,

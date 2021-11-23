@@ -1,7 +1,7 @@
 package com.enphoria.geojsoningestor
 
 
-import com.enphoria.geojsoningestor.transform.Transform2
+import com.enphoria.geojsoningestor.transform.Transform
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -10,7 +10,7 @@ class GeojsoningestorApplication
 
 fun main(args: Array<String>) {
     runApplication<GeojsoningestorApplication>(*args)
-    val transform: Transform2 = Transform2()
+    val transform: Transform = Transform()
     transform.readGeojson()
 
 }

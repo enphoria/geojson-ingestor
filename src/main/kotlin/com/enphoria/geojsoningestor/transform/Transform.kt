@@ -1,46 +1,62 @@
 package com.enphoria.geojsoningestor.transform
 
-import com.zepben.evolve.database.sqlite.DatabaseWriter
-import com.enphoria.geojsoningestor.mapper.geojson.Feature
-import kotlin.Throws
-import java.io.IOException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.enphoria.geojsoningestor.mapper.geojson.GeoJson
-import com.zepben.evolve.cim.iec61968.common.Location
-import com.zepben.evolve.cim.iec61968.common.PositionPoint
-import com.zepben.evolve.cim.iec61968.metering.UsagePoint
-import com.zepben.evolve.cim.iec61970.base.core.BaseVoltage
-import com.zepben.evolve.cim.iec61970.base.diagramlayout.Diagram
-import com.zepben.evolve.cim.iec61970.base.diagramlayout.DiagramObject
-import com.zepben.evolve.cim.iec61970.base.diagramlayout.DiagramObjectPoint
-import com.zepben.evolve.cim.iec61970.base.meas.Accumulator
-import com.zepben.evolve.cim.iec61970.base.meas.Analog
-import com.zepben.evolve.cim.iec61970.base.meas.Measurement
 import com.zepben.evolve.cim.iec61970.base.wires.EnergyConsumer
 import com.zepben.evolve.cim.iec61970.base.wires.EnergyConsumerPhase
-import com.zepben.evolve.services.common.BaseService
-import com.zepben.evolve.services.common.meta.DataSource
-import com.zepben.evolve.services.common.meta.MetadataCollection
-import com.zepben.evolve.services.diagram.DiagramService
+import com.enphoria.geojsoningestor.mapper.geojsondata.Feature
+import com.enphoria.geojsoningestor.mapper.geojsondata.GeoJsonIngestor
+import com.enphoria.geojsoningestor.mapper.geojsonline.GeoJsonLine
+import com.enphoria.geojsoningestor.mapper.model.ConsumerModel
+import com.enphoria.geojsoningestor.mapper.model.Util
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.zepben.evolve.services.network.NetworkService
-import com.zepben.protobuf.cim.iec61968.metering.UsagePointOrBuilder
-import com.zepben.protobuf.cim.iec61970.base.wires.EnergyConnection
-import com.zepben.protobuf.cim.iec61970.base.wires.EnergySource
+import java.io.File
+import java.io.IOException
 import java.nio.file.Paths
 import java.util.function.Consumer
 
 class Transform {
     @Throws(IOException::class)
     fun readGeojson() {
-        //String geojson = "";
-        val mapping = ObjectMapper()
         val service = NetworkService()
-        var cEc:Int = 0
-        //Paths.get("geojson.json").toFile()
-        val geojson = mapping.readValue(
+        val consumerModel = ConsumerModel()
+
+        val geoJsonMap = ObjectMapper().registerModule(KotlinModule())
+
+        val jsonString =  File(Util.routeGeoJson+"/geojson.json").readText(Charsets.UTF_8)
+        val mapper = ObjectMapper().registerModule(KotlinModule())
+        var geojson = mapper.readValue(jsonString, GeoJsonIngestor::class.java)
+
+
+       File(Util.routeGeoJson).list().forEach{
+           if(!it.equals("application.properties")) {
+               var readGeoJson = File(Util.routeGeoJson+"/"+it).readText(Charsets.UTF_8)
+               try {
+                   Util.objectMapper.add(geoJsonMap.readValue(readGeoJson, GeoJsonIngestor::class.java))
+               }catch (e:Exception){
+                   Util.objectMapperLine.add(geoJsonMap.readValue(readGeoJson, GeoJsonLine::class.java))
+               }
+           }
+       }
+
+        //consumerModel.setObjecMapper(geoIngestors)
+        consumerModel.setClassLoad("EnergyConsumer","Location")
+
+
+
+
+    //val deserializedValue = ObjectMapper().readerFor(GeoJsonIngestor::class.java).readValue<GeoJsonIngestor>(jsonString)
+
+     println("OK")
+
+
+        /*val geojson = mapping.readValue(
             Paths.get("/home/alex/Documentos/Projects/AUTRALIA/geojson-ingestor/src/main/resources/geojson.json").toFile(),
-            GeoJson::class.java
-        )
+            GeoJsonIngestor::class.java
+        )*/
+
+
+/*
         geojson.features.forEach(Consumer { item: Feature ->
             if (item.properties.classd == "EnergyConsumer") {
                 cEc++
@@ -50,7 +66,8 @@ class Transform {
                 val amps = Analog().apply { powerSystemResourceMRID = "ASWITCH" }
                 val count = Accumulator().apply { powerSystemResourceMRID = "ASWITCH" }
 
-                var loc = Location().apply { name = "prueba"+cEc
+                var loc = Location().apply {
+                    name = "prueba"+cEc
                     description = item.properties.classd.toString()+cEc
                     addPoint(PositionPoint(item.properties.lon,item.properties.lat))
                 }
@@ -60,7 +77,7 @@ class Transform {
                     p = 0.0
                     q = 0.0
                     pFixed = 0.0
-                    name = "prueba"+cEc
+                    name = item.properties.name.toString()
                     description = item.properties.classd.toString()+cEc
                     location = loc
                 }
@@ -122,7 +139,9 @@ class Transform {
         serviceDiagram.getDiagramObjects("aSwitch")
 
 
-        DatabaseWriter(dbFile).save(metaData, listOf(service, serviceDiagram))
+        DatabaseWriter(dbFile).save(metaData, listOf(service, serviceDiagram))*/
         //geojson.features.forEach(System.out::println);
     }
+
+
 }

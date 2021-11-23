@@ -1,14 +1,12 @@
 package com.enphoria.geojsoningestor.mapper.geojson
-
 import com.fasterxml.jackson.annotation.JsonProperty
 
 class Properties {
-    var name: String? = null
     var fid = 0
     var id: String? = null
 
     @JsonProperty("Name")
-    var names: String? = null
+    var name: String? = null
 
     @JsonProperty("Class")
     var classd: String? = null

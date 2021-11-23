@@ -1,4 +1,4 @@
-package com.enphoria.geojsoningestor.json
+package com.enphoria.geojsoningestor.mapper.geojsonline
 
 data class Crs(
     val properties: Properties,
